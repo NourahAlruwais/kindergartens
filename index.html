@@ -11,6 +11,7 @@
   <style>
     body { 
       font-family: 'Tajawal', sans-serif; 
+      /* تطبيق الخلفية المخصصة بناءً على التصميم المرفق */
       background-color: #f8fafc;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' width='100%' height='100%' preserveAspectRatio='none'%3E%3Cdefs%3E%3Cpattern id='dots-tl' x='0' y='0' width='16' height='16' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='2' cy='2' r='1.2' fill='%23c4b5fd' opacity='0.35'/%3E%3C/pattern%3E%3Cpattern id='dots-br' x='0' y='0' width='16' height='16' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='2' cy='2' r='1.2' fill='%23c4b5fd' opacity='0.35'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%' height='100%' fill='%23f9fafb'/%3E%3Crect x='0' y='0' width='350' height='250' fill='url(%23dots-tl)' opacity='0.7'/%3E%3Cpath d='M-50,-50 C250,-50 350,150 500,200 C650,250 800,100 1000,150 L-50,150 Z' fill='%23ede9fe' opacity='0.65'/%3E%3Cpath d='M-20,-20 C200,80 300,220 520,160 C650,130 750,20 950,80' fill='none' stroke='%23a78bfa' stroke-width='1' opacity='0.5'/%3E%3Crect x='1090' y='650' width='350' height='250' fill='url(%23dots-br)' opacity='0.7'/%3E%3Cpath d='M1490,950 C1190,950 1090,750 940,700 C790,650 640,800 440,750 L1490,750 Z' fill='%23ede9fe' opacity='0.65'/%3E%3Cpath d='M1460,920 C1240,820 1140,680 920,740 C790,770 690,880 490,820' fill='none' stroke='%23a78bfa' stroke-width='1' opacity='0.5'/%3E%3Ccircle cx='1320' cy='100' r='25' fill='none' stroke='%236ee7b7' stroke-width='1' opacity='0.4'/%3E%3Ccircle cx='120' cy='820' r='30' fill='none' stroke='%236ee7b7' stroke-width='1' opacity='0.4'/%3E%3C/svg%3E");
       background-size: cover;
@@ -43,7 +44,7 @@
       <div class="flex items-center gap-3">
         <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          قاعدة البيانات النشطة
+          قاعدة البيانات
         </span>
       </div>
     </div>
@@ -152,24 +153,38 @@
       </div>
     </div>
 
-    <!-- جدول عرض البيانات مع التمرير الأفقي المرن -->
+    <!-- جدول عرض البيانات -->
     <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-slate-100 overflow-hidden print-shadow">
-      <div class="overflow-x-auto">
-        <table class="w-full text-center border-collapse text-xs min-w-[1000px]">
+      <div>
+        <table class="w-full text-center border-collapse text-xs table-fixed">
+          <colgroup>
+            <col style="width: 7%;">  <!-- الرقم الإحصائي -->
+            <col style="width: 16%;"> <!-- اسم الروضة -->
+            <col style="width: 6%;">  <!-- القطاع -->
+            <col style="width: 6%;">  <!-- المدينة -->
+            <col style="width: 6%;">  <!-- السلطة -->
+            <col style="width: 7%;">  <!-- طبيعة المبنى (مستقلة/ملحقة) -->
+            <col style="width: 15%;"> <!-- اسم المديرة -->
+            <col style="width: 9%;">  <!-- الجوال -->
+            <col style="width: 9%;">  <!-- البريد الإلكتروني -->
+            <col style="width: 7%;">  <!-- المعلمات على الملاك -->
+            <col style="width: 6%;">  <!-- العجز -->
+            <col style="width: 6%;">  <!-- الإجراءات -->
+          </colgroup>
           <thead>
             <tr class="bg-slate-50/80 border-b border-slate-100 text-slate-500 font-bold">
-              <th class="py-3 px-2 text-center">الرقم الإحصائي</th>
-              <th class="py-3 px-3 text-center">اسم الروضة</th>
-              <th class="py-3 px-2 text-center">القطاع</th>
-              <th class="py-3 px-2 text-center">المدينة</th>
-              <th class="py-3 px-2 text-center">السلطة</th>
-              <th class="py-3 px-2 text-center">طبيعة المبنى</th>
-              <th class="py-3 px-3 text-center">اسم المديرة</th>
-              <th class="py-3 px-2 text-center">الجوال</th>
-              <th class="py-3 px-2 text-center">البريد الإلكتروني</th>
-              <th class="py-3 px-2 text-center">المعلمات على الملاك</th>
-              <th class="py-3 px-2 text-center">العجز</th>
-              <th class="py-3 px-2 no-print text-center">الإجراءات</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">الرقم الإحصائي</th>
+              <th class="py-3 px-2 text-center whitespace-normal leading-tight">اسم الروضة</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">القطاع</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">المدينة</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">السلطة</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">طبيعة المبنى<br>(للحكومي)</th>
+              <th class="py-3 px-2 text-center whitespace-normal leading-tight">اسم المديرة</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">الجوال</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">البريد الإلكتروني</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">المعلمات<br>على الملاك</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">العجز</th>
+              <th class="py-3 px-1 no-print text-center whitespace-normal leading-tight">الإجراءات</th>
             </tr>
           </thead>
           <tbody id="tableBody" class="divide-y divide-slate-100 text-xs">
@@ -315,6 +330,7 @@
       {"المحافظة": "الخبر", "المدينة القرية": "الخبر", "السلطة": "حكومي", "طبيعة المبنى": "ملحقة", "الرقم الإحصائي": "15187", "اسم المدرسة": "روضة الخبر الأولى الحكومية", "اسم المديرة": "مريم ناصر مبارك الدوسري", "رقم الجوال": "966506821122", "البريد الإلكتروني": "15187@estg.moe.gov.sa", "عدد المعلمات على الملاك": "18", "العجز": "0"}
     ];
 
+    // الأرقام الإحصائية للروضات المستقلة حصرياً
     const independentStatNos = [
       "155114", "160508", "160522", "160550", "160777", "160995", "55002", "55008", 
       "55021", "55043", "55708", "55988", "56001", "56138", "56280", "60502", 
@@ -326,6 +342,7 @@
     ];
 
     window.currentFilteredData = [];
+    let hasSearched = false;
 
     window.onload = function() {
       const saved = localStorage.getItem('kg_data_store');
@@ -428,7 +445,7 @@
           buildingBadge = `<span class="px-2 py-0.5 bg-cyan-50 text-cyan-700 border border-cyan-100 rounded-md font-bold inline-block">ملحقة</span>`;
         }
 
-        const phoneLink = phone !== '-' ? `<a href="tel:${phone}" class="text-indigo-600 hover:underline font-mono inline-flex items-center justify-center gap-0.5" title="${phone}">📞 ${phone}</a>` : '-';
+        const phoneLink = phone !== '-' ? `<a href="tel:${phone}" class="text-indigo-600 hover:underline font-mono inline-flex items-center justify-center gap-0.5 truncate" title="${phone}">📞 ${phone}</a>` : '-';
         const emailLink = email !== '-' ? `<a href="mailto:${email}" class="text-indigo-600 hover:underline font-mono text-[11px] inline-flex items-center justify-center gap-0.5" title="${email}">✉️ إرسال</a>` : '-';
         
         const deficitBadge = deficit !== '0' && deficit !== '-' ? `<span class="px-2 py-0.5 bg-rose-50 text-rose-700 border border-rose-100 rounded-md font-bold inline-block">${deficit}</span>` : `<span class="text-slate-600 font-bold">${deficit}</span>`;
@@ -437,19 +454,19 @@
         tr.className = "hover:bg-slate-50/80 transition-colors";
 
         tr.innerHTML = `
-          <td class="py-2.5 px-2 font-mono text-indigo-600 font-bold text-center text-xs">${statNo}</td>
-          <td class="py-2.5 px-3 font-bold text-slate-900 text-center text-xs">${name}</td>
-          <td class="py-2.5 px-2 font-semibold text-slate-700 text-center text-xs">${province}</td>
-          <td class="py-2.5 px-2 text-slate-500 text-[11px] text-center">${city}</td>
-          <td class="py-2.5 px-2 text-center"><span class="${badgeColor} border px-2 py-0.5 rounded-lg text-[10px] font-bold inline-block">${type}</span></td>
-          <td class="py-2.5 px-2 text-center text-xs">${buildingBadge}</td>
-          <td class="py-2.5 px-3 text-slate-800 text-center text-xs">${manager}</td>
-          <td class="py-2.5 px-2 font-mono text-[11px] text-center">${phoneLink}</td>
-          <td class="py-2.5 px-2 font-mono text-[11px] text-center">${emailLink}</td>
-          <td class="py-2.5 px-2 font-mono text-center font-bold text-slate-700 text-xs">${staffCount}</td>
-          <td class="py-2.5 px-2 font-mono text-center text-xs">${deficitBadge}</td>
-          <td class="py-2.5 px-2 no-print text-center whitespace-nowrap">
-            <button onclick="editKg('${statNo}')" class="px-1.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-md text-[11px] font-bold transition ml-1" title="تعديل">✏️</button>
+          <td class="py-2.5 px-1 font-mono text-indigo-600 font-bold text-center text-xs truncate" title="${statNo}">${statNo}</td>
+          <td class="py-2.5 px-2 font-bold text-slate-900 text-center text-xs truncate" title="${name}">${name}</td>
+          <td class="py-2.5 px-1 font-semibold text-slate-700 text-center text-xs truncate" title="${province}">${province}</td>
+          <td class="py-2.5 px-1 text-slate-500 text-[11px] text-center truncate" title="${city}">${city}</td>
+          <td class="py-2.5 px-1 text-center truncate"><span class="${badgeColor} border px-1.5 py-0.5 rounded-lg text-[10px] font-bold inline-block truncate" title="${type}">${type}</span></td>
+          <td class="py-2.5 px-1 text-center text-xs truncate">${buildingBadge}</td>
+          <td class="py-2.5 px-2 text-slate-800 text-center text-xs truncate" title="${manager}">${manager}</td>
+          <td class="py-2.5 px-1 font-mono text-[11px] text-center truncate">${phoneLink}</td>
+          <td class="py-2.5 px-1 font-mono text-[11px] text-center truncate">${emailLink}</td>
+          <td class="py-2.5 px-1 font-mono text-center font-bold text-slate-700 text-xs truncate">${staffCount}</td>
+          <td class="py-2.5 px-1 font-mono text-center text-xs truncate">${deficitBadge}</td>
+          <td class="py-2.5 px-1 no-print text-center whitespace-nowrap">
+            <button onclick="editKg('${statNo}')" class="px-1.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-md text-[11px] font-bold transition ml-0.5" title="تعديل">✏️</button>
             <button onclick="deleteKg('${statNo}')" class="px-1.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-md text-[11px] font-bold transition" title="حذف">🗑️</button>
           </td>
         `;
@@ -465,6 +482,7 @@
     }
 
     function performSearch() {
+      hasSearched = true;
       const query = document.getElementById('searchInput').value.trim().toLowerCase();
       const selectedProvince = document.getElementById('provinceFilter').value.trim().toLowerCase();
       const selectedType = document.getElementById('typeFilter').value.trim().toLowerCase();
@@ -479,32 +497,24 @@
         const city = getVal(row, ['المدينة القرية', 'المدينة']).toLowerCase();
         const type = getVal(row, ['السلطة']).toLowerCase();
         const buildingType = getVal(row, ['طبيعة المبنى', 'الارتباط']).toLowerCase();
-        const manager = getVal(row, ['اسم المديرة', 'المديرة']).toLowerCase();
+        const manager = getVal(row, ['اسم المديرة', 'المديرة', 'القائدة']).toLowerCase();
         const phone = getVal(row, ['رقم الجوال', 'الجوال']).toLowerCase();
         const email = getVal(row, ['البريد الإلكتروني', 'البريد']).toLowerCase();
 
-        const matchesQuery = !query || 
-          statNo.includes(query) || 
-          name.includes(query) || 
-          manager.includes(query) || 
-          province.includes(query) || 
-          city.includes(query) || 
-          phone.includes(query) || 
-          email.includes(query) ||
-          buildingType.includes(query);
-
-        const matchesProvince = !selectedProvince || province === selectedProvince;
+        const matchesQuery = !query || statNo.includes(query) || name.includes(query) || manager.includes(query) || phone.includes(query) || email.includes(query) || city.includes(query);
+        const matchesProvince = !selectedProvince || province.includes(selectedProvince);
         
         let matchesType = true;
         if (selectedType) {
-          if (selectedType === 'عالمي') {
-            matchesType = type.includes('عالمي') || type.includes('أجنبي');
-          } else {
-            matchesType = type.includes(selectedType);
-          }
+          if (selectedType === 'حكومي') matchesType = type.includes('حكومي');
+          else if (selectedType === 'أهلي') matchesType = type.includes('أهلي');
+          else if (selectedType === 'عالمي') matchesType = type.includes('عالمي') || type.includes('أجنبي');
         }
 
-        const matchesBuilding = !selectedBuilding || buildingType === selectedBuilding;
+        let matchesBuilding = true;
+        if (selectedBuilding) {
+          matchesBuilding = buildingType.includes(selectedBuilding);
+        }
 
         return matchesQuery && matchesProvince && matchesType && matchesBuilding;
       });
@@ -520,21 +530,10 @@
       renderTable([], true);
     }
 
-    function handleModalTypeChange() {
-      const typeVal = document.getElementById('modalType').value;
-      const buildingSelect = document.getElementById('modalBuildingType');
-      if (typeVal === 'حكومي') {
-        buildingSelect.value = 'ملحقة';
-      } else {
-        buildingSelect.value = '-';
-      }
-    }
-
     function openAddModal() {
       document.getElementById('modalTitle').innerText = 'إضافة روضة جديدة';
-      document.getElementById('kgForm').reset();
       document.getElementById('editOriginalId').value = '';
-      document.getElementById('modalType').value = 'حكومي';
+      document.getElementById('kgForm').reset();
       document.getElementById('modalBuildingType').value = 'ملحقة';
       document.getElementById('kgModal').classList.remove('hidden');
     }
@@ -543,70 +542,72 @@
       document.getElementById('kgModal').classList.add('hidden');
     }
 
-    function editKg(statNo) {
-      const item = window.activeData.find(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) === statNo);
-      if (!item) {
-        alert('عذراً، لم يتم العثور على بيانات الروضة.');
-        return;
+    function handleModalTypeChange() {
+      const typeVal = document.getElementById('modalType').value;
+      const buildingSelect = document.getElementById('modalBuildingType');
+      if (typeVal !== 'حكومي') {
+        buildingSelect.value = '-';
+      } else {
+        buildingSelect.value = 'ملحقة';
       }
+    }
+
+    function editKg(statNo) {
+      const row = window.activeData.find(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) === statNo);
+      if (!row) return;
 
       document.getElementById('modalTitle').innerText = 'تعديل بيانات الروضة';
       document.getElementById('editOriginalId').value = statNo;
 
-      document.getElementById('modalStatNo').value = getVal(item, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']);
-      document.getElementById('modalName').value = getVal(item, ['اسم المدرسة', 'اسم الروضة', 'الروضة']);
-      document.getElementById('modalProvince').value = getVal(item, ['المحافظة', 'القطاع']);
-      document.getElementById('modalCity').value = getVal(item, ['المدينة القرية', 'المدينة', 'القرية']);
-      
-      const typeVal = getVal(item, ['السلطة', 'نوع المدرسة']);
-      document.getElementById('modalType').value = typeVal.includes('أهلي') ? 'أهلي' : (typeVal.includes('عالمي') || typeVal.includes('أجنبي') ? 'عالمي وأجنبي' : 'حكومي');
-      
-      document.getElementById('modalBuildingType').value = getVal(item, ['طبيعة المبنى', 'الارتباط']);
-      document.getElementById('modalManager').value = getVal(item, ['اسم المديرة', 'المديرة', 'القائدة']);
-      document.getElementById('modalPhone').value = getVal(item, ['رقم الجوال', 'الجوال', 'هاتف']);
-      document.getElementById('modalEmail').value = getVal(item, ['البريد الإلكتروني', 'البريد', 'إيميل']);
-      document.getElementById('modalStaffCount').value = getVal(item, ['عدد المعلمات على الملاك', 'المعلمات']);
-      document.getElementById('modalDeficit').value = getVal(item, ['العجز', 'النقص']);
+      document.getElementById('modalStatNo').value = getVal(row, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']);
+      document.getElementById('modalName').value = getVal(row, ['اسم المدرسة', 'اسم الروضة', 'الروضة']);
+      document.getElementById('modalProvince').value = getVal(row, ['المحافظة', 'القطاع']);
+      document.getElementById('modalCity').value = getVal(row, ['المدينة القرية', 'المدينة', 'القرية']);
+      document.getElementById('modalType').value = getVal(row, ['السلطة', 'نوع المدرسة']);
+      document.getElementById('modalBuildingType').value = getVal(row, ['طبيعة المبنى', 'الارتباط']);
+      document.getElementById('modalManager').value = getVal(row, ['اسم المديرة', 'المديرة', 'القائدة']);
+      document.getElementById('modalPhone').value = getVal(row, ['رقم الجوال', 'الجوال', 'هاتف']);
+      document.getElementById('modalEmail').value = getVal(row, ['البريد الإلكتروني', 'البريد', 'إيميل']);
+      document.getElementById('modalStaffCount').value = getVal(row, ['عدد المعلمات على الملاك', 'المعلمات']);
+      document.getElementById('modalDeficit').value = getVal(row, ['العجز', 'النقص']);
 
       document.getElementById('kgModal').classList.remove('hidden');
+    }
+
+    function deleteKg(statNo) {
+      if (confirm('هل أنت متأكد من حذف هذه الروضة؟')) {
+        window.activeData = window.activeData.filter(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) !== statNo);
+        saveToStorage();
+        if (hasSearched) {
+          performSearch();
+        } else {
+          renderTable([], true);
+        }
+      }
     }
 
     function saveKgData(event) {
       event.preventDefault();
       const originalId = document.getElementById('editOriginalId').value;
-      
-      const statNo = document.getElementById('modalStatNo').value.trim();
-      const name = document.getElementById('modalName').value.trim();
-      const province = document.getElementById('modalProvince').value.trim();
-      const city = document.getElementById('modalCity').value.trim();
-      const type = document.getElementById('modalType').value.trim();
-      const buildingType = document.getElementById('modalBuildingType').value.trim();
-      const manager = document.getElementById('modalManager').value.trim();
-      const phone = document.getElementById('modalPhone').value.trim();
-      const email = document.getElementById('modalEmail').value.trim();
-      const staffCount = document.getElementById('modalStaffCount').value.trim();
-      const deficit = document.getElementById('modalDeficit').value.trim();
 
       const newRecord = {
-        "المحافظة": province,
-        "المدينة القرية": city,
-        "السلطة": type,
-        "طبيعة المبنى": buildingType,
-        "الرقم الإحصائي": statNo,
-        "اسم المدرسة": name,
-        "اسم المديرة": manager,
-        "رقم الجوال": phone,
-        "البريد الإلكتروني": email,
-        "عدد المعلمات على الملاك": staffCount,
-        "العجز": deficit
+        "الرقم الإحصائي": document.getElementById('modalStatNo').value.trim(),
+        "اسم المدرسة": document.getElementById('modalName').value.trim(),
+        "المحافظة": document.getElementById('modalProvince').value.trim(),
+        "المدينة القرية": document.getElementById('modalCity').value.trim(),
+        "السلطة": document.getElementById('modalType').value.trim(),
+        "طبيعة المبنى": document.getElementById('modalBuildingType').value.trim(),
+        "اسم المديرة": document.getElementById('modalManager').value.trim(),
+        "رقم الجوال": document.getElementById('modalPhone').value.trim(),
+        "البريد الإلكتروني": document.getElementById('modalEmail').value.trim(),
+        "عدد المعلمات على الملاك": document.getElementById('modalStaffCount').value.trim(),
+        "العجز": document.getElementById('modalDeficit').value.trim()
       };
 
       if (originalId) {
         const index = window.activeData.findIndex(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) === originalId);
         if (index !== -1) {
           window.activeData[index] = newRecord;
-        } else {
-          window.activeData.push(newRecord);
         }
       } else {
         window.activeData.unshift(newRecord);
@@ -614,42 +615,22 @@
 
       saveToStorage();
       closeModal();
-      performSearch();
-    }
-
-    function deleteKg(statNo) {
-      if (confirm('هل أنت متأكد من حذف هذه الروضة نهائياً؟')) {
-        window.activeData = window.activeData.filter(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) !== statNo);
-        saveToStorage();
+      if (hasSearched) {
         performSearch();
+      } else {
+        renderTable([], true);
       }
     }
 
     function exportFilteredToExcel() {
       const dataToExport = window.currentFilteredData && window.currentFilteredData.length > 0 ? window.currentFilteredData : window.activeData;
-      
       if (!dataToExport || dataToExport.length === 0) {
-        alert('لا توجد بيانات للتصدير.');
+        alert('لا توجد بيانات للتصدير!');
         return;
       }
-
-      const formattedData = dataToExport.map(row => ({
-        "الرقم الإحصائي": getVal(row, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']),
-        "اسم الروضة": getVal(row, ['اسم المدرسة', 'اسم الروضة', 'الروضة']),
-        "القطاع": getVal(row, ['المحافظة', 'القطاع']),
-        "المدينة": getVal(row, ['المدينة القرية', 'المدينة']),
-        "السلطة": getVal(row, ['السلطة', 'نوع المدرسة']),
-        "طبيعة المبنى": getVal(row, ['طبيعة المبنى', 'الارتباط']),
-        "اسم المديرة": getVal(row, ['اسم المديرة', 'المديرة']),
-        "رقم الجوال": getVal(row, ['رقم الجوال', 'الجوال']),
-        "البريد الإلكتروني": getVal(row, ['البريد الإلكتروني', 'البريد']),
-        "المعلمات على الملاك": getVal(row, ['عدد المعلمات على الملاك', 'المعلمات']),
-        "العجز": getVal(row, ['العجز', 'النقص'])
-      }));
-
-      const worksheet = XLSX.utils.json_to_sheet(formattedData);
+      const worksheet = XLSX.utils.json_to_sheet(dataToExport);
       const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "بيانات الروضات");
+      XLSX.utils.book_append_sheet(workbook, worksheet, "الروضات");
       XLSX.writeFile(workbook, "Kindergartens_Data.xlsx");
     }
   </script>

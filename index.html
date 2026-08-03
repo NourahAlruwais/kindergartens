@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الطفولة المبكرة | قسم رياض الأطفال</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- مكتبة تصدير ملفات إكسل الحقيقية XLSX -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { 
+      font-family: 'Tajawal', sans-serif; 
+      /* تطبيق الخلفية المخصصة بناءً على التصميم المرفق */
+      background-color: #f8fafc;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' width='100%' height='100%' preserveAspectRatio='none'%3E%3Cdefs%3E%3Cpattern id='dots-tl' x='0' y='0' width='16' height='16' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='2' cy='2' r='1.2' fill='%23c4b5fd' opacity='0.35'/%3E%3C/pattern%3E%3Cpattern id='dots-br' x='0' y='0' width='16' height='16' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='2' cy='2' r='1.2' fill='%23c4b5fd' opacity='0.35'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%' height='100%' fill='%23f9fafb'/%3E%3Crect x='0' y='0' width='350' height='250' fill='url(%23dots-tl)' opacity='0.7'/%3E%3Cpath d='M-50,-50 C250,-50 350,150 500,200 C650,250 800,100 1000,150 L-50,150 Z' fill='%23ede9fe' opacity='0.65'/%3E%3Cpath d='M-20,-20 C200,80 300,220 520,160 C650,130 750,20 950,80' fill='none' stroke='%23a78bfa' stroke-width='1' opacity='0.5'/%3E%3Crect x='1090' y='650' width='350' height='250' fill='url(%23dots-br)' opacity='0.7'/%3E%3Cpath d='M1490,950 C1190,950 1090,750 940,700 C790,650 640,800 440,750 L1490,750 Z' fill='%23ede9fe' opacity='0.65'/%3E%3Cpath d='M1460,920 C1240,820 1140,680 920,740 C790,770 690,880 490,820' fill='none' stroke='%23a78bfa' stroke-width='1' opacity='0.5'/%3E%3Ccircle cx='1320' cy='100' r='25' fill='none' stroke='%236ee7b7' stroke-width='1' opacity='0.4'/%3E%3Ccircle cx='120' cy='820' r='30' fill='none' stroke='%236ee7b7' stroke-width='1' opacity='0.4'/%3E%3C/svg%3E");
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      scroll-behavior: smooth; 
+    }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; padding: 0 !important; }
+      .print-shadow { box-shadow: none !important; border: none !important; }
+    }
+  </style>
+</head>
+<body class="text-gray-800 p-3 md:p-6 flex flex-col min-h-screen">
+
+  <div class="max-w-7xl mx-auto space-y-4 flex-grow w-full">
+    
+    <!-- الهيدر الاحترافي -->
+    <div class="no-print bg-white/90 backdrop-blur-md p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-lg shadow-inner">
+          NR
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">روضات رياض الأطفال (الحكومية/ الأهلية/العالمية)</h1>
+          <p class="text-slate-500 text-xs mt-0.5">الاستعلام عن بيانات الروضات بالمنطقة الشرقية</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          قاعدة البيانات
+        </span>
+      </div>
+    </div>
+
+    <!-- كروت الإحصائيات -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <!-- إجمالي النتائج -->
+      <div class="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-slate-100 shadow-sm transition hover:shadow-md">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-400">إجمالي النتائج</span>
+          <span class="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 text-xs">📊</span>
+        </div>
+        <p id="totalCount" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
+      </div>
+
+      <!-- روضات حكومية (مع تفصيل مستقلة وملحقة) -->
+      <div class="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-slate-100 shadow-sm transition hover:shadow-md">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-400">روضات حكومية</span>
+          <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 text-xs">🏛️</span>
+        </div>
+        <p id="govCount" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
+        <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[11px] font-semibold">
+          <span class="text-slate-500">مستقلة: <strong id="govIndependentCount" class="text-indigo-600">0</strong></span>
+          <span class="text-slate-500">ملحقة: <strong id="govAttachedCount" class="text-cyan-600">0</strong></span>
+        </div>
+      </div>
+
+      <!-- روضات أهلية -->
+      <div class="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-slate-100 shadow-sm transition hover:shadow-md">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-400">روضات أهلية</span>
+          <span class="p-1.5 rounded-lg bg-amber-50 text-amber-600 text-xs">🏫</span>
+        </div>
+        <p id="privateCount" class="text-2xl font-extrabold text-amber-600 mt-1">0</p>
+      </div>
+
+      <!-- روضات عالمية وأجنبية -->
+      <div class="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-slate-100 shadow-sm transition hover:shadow-md">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-400">روضات عالمية وأجنبية</span>
+          <span class="p-1.5 rounded-lg bg-purple-50 text-purple-600 text-xs">🌍</span>
+        </div>
+        <p id="globalCount" class="text-2xl font-extrabold text-purple-600 mt-1">0</p>
+      </div>
+    </div>
+
+    <!-- أدوات البحث والفلترة الاحترافية -->
+    <div class="no-print bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+      
+      <!-- مربع البحث النصي -->
+      <div class="flex gap-2">
+        <div class="relative w-full">
+          <input type="text" id="searchInput" placeholder="ابحث باسم الروضة، الرقم الإحصائي، اسم المديرة، أو الجوال..." class="w-full pr-10 pl-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-xs transition">
+          <svg class="w-4 h-4 text-slate-400 absolute right-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <button onclick="performSearch()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold text-xs transition shadow-sm shadow-indigo-100 whitespace-nowrap">
+          بحث
+        </button>
+      </div>
+
+      <!-- فلاتر القطاعات، السلطة، وطبيعة المبنى -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <select id="provinceFilter" onchange="performSearch()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs font-semibold text-slate-700 transition">
+          <option value="">جميع القطاعات والمحافظات</option>
+          <option value="ابقيق">ابقيق</option>
+          <option value="الجبيل">الجبيل</option>
+          <option value="الخبر">الخبر</option>
+          <option value="الخفجي">الخفجي</option>
+          <option value="الدمام">الدمام</option>
+          <option value="القطيف">القطيف</option>
+          <option value="النعيرية">النعيرية</option>
+          <option value="حفر الباطن">حفر الباطن</option>
+          <option value="رأس تنورة">رأس تنورة</option>
+          <option value="قرية العليا">قرية العليا</option>
+        </select>
+
+        <select id="typeFilter" onchange="performSearch()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs font-semibold text-slate-700 transition">
+          <option value="">جميع الروضات (حسب السلطة)</option>
+          <option value="حكومي">حكومي</option>
+          <option value="أهلي">أهلي</option>
+          <option value="عالمي">عالمي وأجنبي</option>
+        </select>
+
+        <select id="buildingFilter" onchange="performSearch()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs font-semibold text-slate-700 transition">
+          <option value="">طبيعة المبنى (الكل: مستقلة / ملحقة)</option>
+          <option value="مستقلة">مستقلة</option>
+          <option value="ملحقة">ملحقة</option>
+        </select>
+      </div>
+
+      <!-- شريط الأزرار الإضافية -->
+      <div class="flex flex-wrap items-center justify-end pt-2.5 border-t border-slate-100 gap-1.5">
+        <button onclick="openAddModal()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-sm">
+          ➕ إضافة روضة
+        </button>
+        <button onclick="resetFilters()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold transition flex items-center gap-1">
+          🔄 إعادة تعيين
+        </button>
+        <button onclick="exportFilteredToExcel()" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold transition flex items-center gap-1">
+          📥 تصدير Excel
+        </button>
+        <button onclick="window.print()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition flex items-center gap-1">
+          🖨️ طباعة
+        </button>
+      </div>
+    </div>
+
+    <!-- جدول عرض البيانات -->
+    <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-slate-100 overflow-hidden print-shadow">
+      <div>
+        <table class="w-full text-center border-collapse text-xs table-fixed">
+          <colgroup>
+            <col style="width: 7%;">  <!-- الرقم الإحصائي -->
+            <col style="width: 16%;"> <!-- اسم الروضة -->
+            <col style="width: 6%;">  <!-- القطاع -->
+            <col style="width: 6%;">  <!-- المدينة -->
+            <col style="width: 6%;">  <!-- السلطة -->
+            <col style="width: 7%;">  <!-- طبيعة المبنى (مستقلة/ملحقة) -->
+            <col style="width: 15%;"> <!-- اسم المديرة -->
+            <col style="width: 9%;">  <!-- الجوال -->
+            <col style="width: 9%;">  <!-- البريد الإلكتروني -->
+            <col style="width: 7%;">  <!-- المعلمات على الملاك -->
+            <col style="width: 6%;">  <!-- العجز -->
+            <col style="width: 6%;">  <!-- الإجراءات -->
+          </colgroup>
+          <thead>
+            <tr class="bg-slate-50/80 border-b border-slate-100 text-slate-500 font-bold">
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">الرقم الإحصائي</th>
+              <th class="py-3 px-2 text-center whitespace-normal leading-tight">اسم الروضة</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">القطاع</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">المدينة</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">السلطة</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">طبيعة المبنى<br>(للحكومي)</th>
+              <th class="py-3 px-2 text-center whitespace-normal leading-tight">اسم المديرة</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">الجوال</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">البريد الإلكتروني</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">المعلمات<br>على الملاك</th>
+              <th class="py-3 px-1 text-center whitespace-normal leading-tight">العجز</th>
+              <th class="py-3 px-1 no-print text-center whitespace-normal leading-tight">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-slate-100 text-xs">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- زر الصعود إلى الأعلى -->
+  <button id="backToTopBtn" onclick="scrollToTop()" class="no-print fixed bottom-6 left-6 bg-indigo-600 hover:bg-indigo-700 text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300 opacity-0 invisible z-50 focus:outline-none" title="العودة للأعلى">
+    ⬆️
+  </button>
+
+  <!-- نافذة (Modal) إضافة وتعديل الروضة -->
+  <div id="kgModal" class="no-print fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-xl border border-slate-100 space-y-3 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+        <h3 id="modalTitle" class="text-base font-extrabold text-slate-900">إضافة روضة جديدة</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+      </div>
+
+      <form id="kgForm" onsubmit="saveKgData(event)" class="space-y-2.5">
+        <input type="hidden" id="editOriginalId">
+        
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">الرقم الإحصائي</label>
+          <input type="text" id="modalStatNo" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">اسم الروضة / المدرسة</label>
+          <input type="text" id="modalName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">القطاع / المحافظة</label>
+            <select id="modalProvince" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center">
+              <option value="ابقيق">ابقيق</option>
+              <option value="الجبيل">الجبيل</option>
+              <option value="الخبر">الخبر</option>
+              <option value="الخفجي">الخفجي</option>
+              <option value="الدمام">الدمام</option>
+              <option value="القطيف">القطيف</option>
+              <option value="النعيرية">النعيرية</option>
+              <option value="حفر الباطن">حفر الباطن</option>
+              <option value="رأس تنورة">رأس تنورة</option>
+              <option value="قرية العليا">قرية العليا</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">المدينة / القرية</label>
+            <input type="text" id="modalCity" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">السلطة / النوع</label>
+            <select id="modalType" required onchange="handleModalTypeChange()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center">
+              <option value="حكومي">حكومي</option>
+              <option value="أهلي">أهلي</option>
+              <option value="عالمي وأجنبي">عالمي وأجنبي</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">طبيعة المبنى (للحكومي فقط)</label>
+            <select id="modalBuildingType" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center">
+              <option value="ملحقة">ملحقة</option>
+              <option value="مستقلة">مستقلة</option>
+              <option value="-">- (غير محدد / أهلي أو عالمي)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">اسم المديرة</label>
+          <input type="text" id="modalManager" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">رقم الجوال</label>
+            <input type="text" id="modalPhone" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">البريد الإلكتروني</label>
+            <input type="email" id="modalEmail" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">عدد المعلمات على الملاك</label>
+            <input type="number" id="modalStaffCount" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center" placeholder="0">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">العجز</label>
+            <input type="number" id="modalDeficit" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center" placeholder="0">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition">إلغاء</button>
+          <button type="submit" class="px-5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm">حفظ البيانات</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- الفوتر وبصمة الحقوق -->
+  <footer class="no-print mt-8 pt-4 border-t border-slate-200/60 text-center text-xs text-slate-400 pb-4 space-y-1">
+    <p class="font-bold text-slate-700 text-xs">جميع الحقوق محفوظة © <span class="text-indigo-600">Nourah AlRuwais</span></p>
+    <p class="font-mono text-[11px]"><a href="mailto:nalruwais4602@moe.gov.sa" class="hover:text-indigo-600 transition">nalruwais4602@moe.gov.sa</a></p>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      const btn = document.getElementById('backToTopBtn');
+      if (window.scrollY > 250) {
+        btn.classList.remove('opacity-0', 'invisible');
+        btn.classList.add('opacity-100', 'visible');
+      } else {
+        btn.classList.remove('opacity-100', 'visible');
+        btn.classList.add('opacity-0', 'invisible');
+      }
+    });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    const rawData = [
+      {"المحافظة": "ابقيق", "المدينة القرية": "بقيق", "السلطة": "أهلي", "طبيعة المبنى": "-", "الرقم الإحصائي": "56098", "اسم المدرسة": "روضة بقيق الاهليه للبنات", "اسم المديرة": "اسماء سالم خالد الشدي", "رقم الجوال": "966543636282", "البريد الإلكتروني": "56098@estg.moe.gov.sa", "عدد المعلمات على الملاك": "10", "العجز": "0"},
+      {"المحافظة": "ابقيق", "المدينة القرية": "بقيق", "السلطة": "أهلي", "طبيعة المبنى": "-", "الرقم الإحصائي": "199468", "اسم المدرسة": "روضة الأجيال الأهلية بقيق", "اسم المديرة": "هيا محمد بخيت الحقباني", "رقم الجوال": "966504930198", "البريد الإلكتروني": "199468@estg.moe.gov.sa", "عدد المعلمات على الملاك": "12", "العجز": "1"},
+      {"المحافظة": "الجبيل", "المدينة القرية": "الجبيل", "السلطة": "أهلي", "طبيعة المبنى": "-", "الرقم الإحصائي": "55877", "اسم المدرسة": "روضة الأجيال الأهلية بالجبيل", "اسم المديرة": "شعاع ناصر ابراهيم بوعينين", "رقم الجوال": "966551806333", "البريد الإلكتروني": "55877@estg.moe.gov.sa", "عدد المعلمات على الملاك": "15", "العجز": "0"},
+      {"المحافظة": "الجبيل", "المدينة القرية": "الجبيل", "السلطة": "أهلي", "طبيعة المبنى": "-", "الرقم الإحصائي": "55878", "اسم المدرسة": "روضة أجيال الجبيل الأهلية", "اسم المديرة": "منال احمد راشد المويجد", "رقم الجوال": "966503901416", "البريد الإلكتروني": "55878@estg.moe.gov.sa", "عدد المعلمات على الملاك": "9", "العجز": "2"},
+      {"المحافظة": "الجبيل", "المدينة القرية": "الجبيل", "السلطة": "أهلي", "طبيعة المبنى": "-", "الرقم الإحصائي": "55880", "اسم المدرسة": "روضة الخاطر الأهلية", "اسم المديرة": "هياء عبدالعزيز عيسى الخاطر", "رقم الجوال": "966505904588", "البريد الإلكتروني": "55880@estg.moe.gov.sa", "عدد المعلمات على الملاك": "11", "العجز": "0"},
+      {"المحافظة": "الجبيل", "المدينة القرية": "الجبيل", "السلطة": "أهلي", "طبيعة المبنى": "-", "الرقم الإحصائي": "55882", "اسم المدرسة": "روضة الحصان الأهلية بالجبيل", "اسم المديرة": "غدير خالد عبداللطيف النعيمي", "رقم الجوال": "966560010996", "البريد الإلكتروني": "55882@estg.moe.gov.sa", "عدد المعلمات على الملاك": "14", "العجز": "0"},
+      {"المحافظة": "الخبر", "المدينة القرية": "الخبر", "السلطة": "عالمي وأجنبي", "طبيعة المبنى": "-", "الرقم الإحصائي": "55834", "اسم المدرسة": "روضة أصول التربية العالمية", "اسم المديرة": "نوف مسفر مانع القحطاني", "رقم الجوال": "966505801234", "البريد الإلكتروني": "55834@estg.moe.gov.sa", "عدد المعلمات على الملاك": "16", "العجز": "1"},
+      {"المحافظة": "الخبر", "المدينة القرية": "الخبر", "السلطة": "حكومي", "طبيعة المبنى": "ملحقة", "الرقم الإحصائي": "15187", "اسم المدرسة": "روضة الخبر الأولى الحكومية", "اسم المديرة": "مريم ناصر مبارك الدوسري", "رقم الجوال": "966506821122", "البريد الإلكتروني": "15187@estg.moe.gov.sa", "عدد المعلمات على الملاك": "18", "العجز": "0"}
+    ];
+
+    // الأرقام الإحصائية للروضات المستقلة حصرياً
+    const independentStatNos = [
+      "155114", "160508", "160522", "160550", "160777", "160995", "55002", "55008", 
+      "55021", "55043", "55708", "55988", "56001", "56138", "56280", "60502", 
+      "60504", "60857", "60873", "60875", "60877", "60879", "60881", "160523", 
+      "160566", "160754", "160884", "55001", "55007", "55009", "55018", "55022", 
+      "55028", "55030", "55037", "55045", "55714", "56000", "56281", "56305", 
+      "60501", "60503", "60756", "60852", "60858", "60874", "60876", "60878", 
+      "60880", "60882", "60887"
+    ];
+
+    window.currentFilteredData = [];
+    let hasSearched = false;
+
+    window.onload = function() {
+      const saved = localStorage.getItem('kg_data_store');
+      let dataToUse = rawData;
+      if (saved) {
+        try { dataToUse = JSON.parse(saved); } catch(e) {}
+      }
+      
+      dataToUse = dataToUse.map(row => {
+        const statNo = getVal(row, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']);
+        const type = getVal(row, ['السلطة', 'نوع المدرسة']);
+        
+        if (independentStatNos.includes(statNo)) {
+          row['طبيعة المبنى'] = 'مستقلة';
+        } else if (type.includes('حكومي')) {
+          const currentBuilding = getVal(row, ['طبيعة المبنى', 'الارتباط']);
+          if (!currentBuilding || currentBuilding === '-' || currentBuilding === 'مستقلة') {
+            row['طبيعة المبنى'] = 'ملحقة';
+          }
+        }
+        return row;
+      });
+
+      window.activeData = dataToUse;
+      saveToStorage();
+      renderTable([], true);
+    };
+
+    function saveToStorage() {
+      localStorage.setItem('kg_data_store', JSON.stringify(window.activeData));
+    }
+
+    function getVal(row, keys) {
+      const rowKeys = Object.keys(row);
+      for (let k of keys) {
+        const found = rowKeys.find(rk => rk.trim().includes(k.trim()));
+        if (found && row[found] !== undefined && row[found] !== null && row[found] !== "") {
+          return row[found].toString().trim();
+        }
+      }
+      return "-";
+    }
+
+    function renderTable(data, showInitialMessage = false) {
+      window.currentFilteredData = data;
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      let gov = 0;
+      let govIndependent = 0;
+      let govAttached = 0;
+      let pvt = 0;
+      let global = 0;
+
+      if (!data || data.length === 0) {
+        const emptyMessage = showInitialMessage 
+          ? 'أهلاً بك. يرجى إدخال كلمة بحث أو اختيار القطاع والسلطة أو طبيعة المبنى ثم الضغط على زر "بحث" لعرض الروضات.' 
+          : 'لا توجد نتائج مطابقة لبحثك.';
+
+        tbody.innerHTML = `<tr><td colspan="12" class="p-10 text-center text-slate-400 font-medium bg-slate-50/50 text-xs">${emptyMessage}</td></tr>`;
+        document.getElementById('totalCount').innerText = 0;
+        document.getElementById('govCount').innerText = 0;
+        document.getElementById('govIndependentCount').innerText = 0;
+        document.getElementById('govAttachedCount').innerText = 0;
+        document.getElementById('privateCount').innerText = 0;
+        document.getElementById('globalCount').innerText = 0;
+        return;
+      }
+
+      data.forEach(row => {
+        const statNo = getVal(row, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']);
+        const name = getVal(row, ['اسم المدرسة', 'اسم الروضة', 'الروضة']);
+        const province = getVal(row, ['المحافظة', 'القطاع']);
+        const city = getVal(row, ['المدينة القرية', 'المدينة', 'القرية']);
+        const type = getVal(row, ['السلطة', 'نوع المدرسة']);
+        const buildingType = getVal(row, ['طبيعة المبنى', 'الارتباط']);
+        const manager = getVal(row, ['اسم المديرة', 'المديرة', 'القائدة']);
+        const phone = getVal(row, ['رقم الجوال', 'الجوال', 'هاتف']);
+        const email = getVal(row, ['البريد الإلكتروني', 'البريد', 'إيميل']);
+        const staffCount = getVal(row, ['عدد المعلمات على الملاك', 'المعلمات']);
+        const deficit = getVal(row, ['العجز', 'النقص']);
+
+        if (type.includes('حكومي')) {
+          gov++;
+          if (buildingType === 'مستقلة') govIndependent++;
+          else if (buildingType === 'ملحقة') govAttached++;
+        }
+        else if (type.includes('أهلي')) pvt++;
+        else if (type.includes('عالمي') || type.includes('أجنبي')) global++;
+
+        let badgeColor = 'bg-slate-100 text-slate-700 border-slate-200';
+        if (type.includes('حكومي')) badgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-100';
+        else if (type.includes('أهلي')) badgeColor = 'bg-amber-50 text-amber-700 border-amber-100';
+        else if (type.includes('عالمي') || type.includes('أجنبي')) badgeColor = 'bg-purple-50 text-purple-700 border-purple-100';
+
+        let buildingBadge = `<span class="text-slate-600 font-medium">${buildingType}</span>`;
+        if (buildingType === 'مستقلة') {
+          buildingBadge = `<span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-md font-bold inline-block">مستقلة</span>`;
+        } else if (buildingType === 'ملحقة') {
+          buildingBadge = `<span class="px-2 py-0.5 bg-cyan-50 text-cyan-700 border border-cyan-100 rounded-md font-bold inline-block">ملحقة</span>`;
+        }
+
+        const phoneLink = phone !== '-' ? `<a href="tel:${phone}" class="text-indigo-600 hover:underline font-mono inline-flex items-center justify-center gap-0.5 truncate" title="${phone}">📞 ${phone}</a>` : '-';
+        const emailLink = email !== '-' ? `<a href="mailto:${email}" class="text-indigo-600 hover:underline font-mono text-[11px] inline-flex items-center justify-center gap-0.5" title="${email}">✉️ إرسال</a>` : '-';
+        
+        const deficitBadge = deficit !== '0' && deficit !== '-' ? `<span class="px-2 py-0.5 bg-rose-50 text-rose-700 border border-rose-100 rounded-md font-bold inline-block">${deficit}</span>` : `<span class="text-slate-600 font-bold">${deficit}</span>`;
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50/80 transition-colors";
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-1 font-mono text-indigo-600 font-bold text-center text-xs truncate" title="${statNo}">${statNo}</td>
+          <td class="py-2.5 px-2 font-bold text-slate-900 text-center text-xs truncate" title="${name}">${name}</td>
+          <td class="py-2.5 px-1 font-semibold text-slate-700 text-center text-xs truncate" title="${province}">${province}</td>
+          <td class="py-2.5 px-1 text-slate-500 text-[11px] text-center truncate" title="${city}">${city}</td>
+          <td class="py-2.5 px-1 text-center truncate"><span class="${badgeColor} border px-1.5 py-0.5 rounded-lg text-[10px] font-bold inline-block truncate" title="${type}">${type}</span></td>
+          <td class="py-2.5 px-1 text-center text-xs truncate">${buildingBadge}</td>
+          <td class="py-2.5 px-2 text-slate-800 text-center text-xs truncate" title="${manager}">${manager}</td>
+          <td class="py-2.5 px-1 font-mono text-[11px] text-center truncate">${phoneLink}</td>
+          <td class="py-2.5 px-1 font-mono text-[11px] text-center truncate">${emailLink}</td>
+          <td class="py-2.5 px-1 font-mono text-center font-bold text-slate-700 text-xs truncate">${staffCount}</td>
+          <td class="py-2.5 px-1 font-mono text-center text-xs truncate">${deficitBadge}</td>
+          <td class="py-2.5 px-1 no-print text-center whitespace-nowrap">
+            <button onclick="editKg('${statNo}')" class="px-1.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-md text-[11px] font-bold transition ml-0.5" title="تعديل">✏️</button>
+            <button onclick="deleteKg('${statNo}')" class="px-1.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-md text-[11px] font-bold transition" title="حذف">🗑️</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('totalCount').innerText = data.length;
+      document.getElementById('govCount').innerText = gov;
+      document.getElementById('govIndependentCount').innerText = govIndependent;
+      document.getElementById('govAttachedCount').innerText = govAttached;
+      document.getElementById('privateCount').innerText = pvt;
+      document.getElementById('globalCount').innerText = global;
+    }
+
+    function performSearch() {
+      hasSearched = true;
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const selectedProvince = document.getElementById('provinceFilter').value.trim().toLowerCase();
+      const selectedType = document.getElementById('typeFilter').value.trim().toLowerCase();
+      const selectedBuilding = document.getElementById('buildingFilter').value.trim().toLowerCase();
+
+      const sourceData = window.activeData || rawData;
+
+      const filtered = sourceData.filter(row => {
+        const statNo = getVal(row, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']).toLowerCase();
+        const name = getVal(row, ['اسم المدرسة', 'اسم الروضة', 'الروضة']).toLowerCase();
+        const province = getVal(row, ['المحافظة', 'القطاع']).toLowerCase();
+        const city = getVal(row, ['المدينة القرية', 'المدينة']).toLowerCase();
+        const type = getVal(row, ['السلطة']).toLowerCase();
+        const buildingType = getVal(row, ['طبيعة المبنى', 'الارتباط']).toLowerCase();
+        const manager = getVal(row, ['اسم المديرة', 'المديرة']).toLowerCase();
+        const phone = getVal(row, ['رقم الجوال', 'الجوال']).toLowerCase();
+        const email = getVal(row, ['البريد الإلكتروني', 'البريد']).toLowerCase();
+
+        const matchesQuery = !query || 
+          statNo.includes(query) || 
+          name.includes(query) || 
+          manager.includes(query) || 
+          province.includes(query) || 
+          city.includes(query) || 
+          phone.includes(query) || 
+          email.includes(query) ||
+          buildingType.includes(query);
+
+        const matchesProvince = !selectedProvince || province === selectedProvince;
+        
+        let matchesType = true;
+        if (selectedType) {
+          if (selectedType === 'عالمي') {
+            matchesType = type.includes('عالمي') || type.includes('أجنبي');
+          } else {
+            matchesType = type.includes(selectedType);
+          }
+        }
+
+        const matchesBuilding = !selectedBuilding || buildingType === selectedBuilding;
+
+        return matchesQuery && matchesProvince && matchesType && matchesBuilding;
+      });
+
+      renderTable(filtered, false);
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('provinceFilter').value = '';
+      document.getElementById('typeFilter').value = '';
+      document.getElementById('buildingFilter').value = '';
+      hasSearched = false;
+      renderTable([], true);
+    }
+
+    function handleModalTypeChange() {
+      const typeVal = document.getElementById('modalType').value;
+      const buildingSelect = document.getElementById('modalBuildingType');
+      if (typeVal === 'حكومي') {
+        buildingSelect.value = 'ملحقة';
+      } else {
+        buildingSelect.value = '-';
+      }
+    }
+
+    function openAddModal() {
+      document.getElementById('modalTitle').innerText = 'إضافة روضة جديدة';
+      document.getElementById('kgForm').reset();
+      document.getElementById('editOriginalId').value = '';
+      document.getElementById('modalType').value = 'حكومي';
+      document.getElementById('modalBuildingType').value = 'ملحقة';
+      document.getElementById('kgModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('kgModal').classList.add('hidden');
+    }
+
+    function editKg(statNo) {
+      const item = window.activeData.find(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) === statNo);
+      if (!item) {
+        alert('عذراً، لم يتم العثور على بيانات الروضة.');
+        return;
+      }
+
+      document.getElementById('modalTitle').innerText = 'تعديل بيانات الروضة';
+      document.getElementById('editOriginalId').value = statNo;
+
+      document.getElementById('modalStatNo').value = getVal(item, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']);
+      document.getElementById('modalName').value = getVal(item, ['اسم المدرسة', 'اسم الروضة', 'الروضة']);
+      document.getElementById('modalProvince').value = getVal(item, ['المحافظة', 'القطاع']);
+      document.getElementById('modalCity').value = getVal(item, ['المدينة القرية', 'المدينة', 'القرية']);
+      
+      const typeVal = getVal(item, ['السلطة', 'نوع المدرسة']);
+      document.getElementById('modalType').value = typeVal.includes('أهلي') ? 'أهلي' : (typeVal.includes('عالمي') || typeVal.includes('أجنبي') ? 'عالمي وأجنبي' : 'حكومي');
+      
+      document.getElementById('modalBuildingType').value = getVal(item, ['طبيعة المبنى', 'الارتباط']);
+      document.getElementById('modalManager').value = getVal(item, ['اسم المديرة', 'المديرة', 'القائدة']);
+      document.getElementById('modalPhone').value = getVal(item, ['رقم الجوال', 'الجوال', 'هاتف']);
+      document.getElementById('modalEmail').value = getVal(item, ['البريد الإلكتروني', 'البريد', 'إيميل']);
+      document.getElementById('modalStaffCount').value = getVal(item, ['عدد المعلمات على الملاك', 'المعلمات']);
+      document.getElementById('modalDeficit').value = getVal(item, ['العجز', 'النقص']);
+
+      document.getElementById('kgModal').classList.remove('hidden');
+    }
+
+    function saveKgData(event) {
+      event.preventDefault();
+      const originalId = document.getElementById('editOriginalId').value;
+      
+      const statNo = document.getElementById('modalStatNo').value.trim();
+      const name = document.getElementById('modalName').value.trim();
+      const province = document.getElementById('modalProvince').value.trim();
+      const city = document.getElementById('modalCity').value.trim();
+      const type = document.getElementById('modalType').value.trim();
+      const buildingType = document.getElementById('modalBuildingType').value.trim();
+      const manager = document.getElementById('modalManager').value.trim();
+      const phone = document.getElementById('modalPhone').value.trim();
+      const email = document.getElementById('modalEmail').value.trim();
+      const staffCount = document.getElementById('modalStaffCount').value.trim();
+      const deficit = document.getElementById('modalDeficit').value.trim();
+
+      const newRecord = {
+        "المحافظة": province,
+        "المدينة القرية": city,
+        "السلطة": type,
+        "طبيعة المبنى": buildingType,
+        "الرقم الإحصائي": statNo,
+        "اسم المدرسة": name,
+        "اسم المديرة": manager,
+        "رقم الجوال": phone,
+        "البريد الإلكتروني": email,
+        "عدد المعلمات على الملاك": staffCount,
+        "العجز": deficit
+      };
+
+      if (originalId) {
+        const index = window.activeData.findIndex(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) === originalId);
+        if (index !== -1) {
+          window.activeData[index] = newRecord;
+        } else {
+          window.activeData.push(newRecord);
+        }
+      } else {
+        window.activeData.unshift(newRecord);
+      }
+
+      saveToStorage();
+      closeModal();
+      performSearch();
+    }
+
+    function deleteKg(statNo) {
+      if (confirm('هل أنت متأكد من حذف هذه الروضة نهائياً؟')) {
+        window.activeData = window.activeData.filter(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) !== statNo);
+        saveToStorage();
+        performSearch();
+      }
+    }
+
+    function exportFilteredToExcel() {
+      const dataToExport = window.currentFilteredData && window.currentFilteredData.length > 0 ? window.currentFilteredData : window.activeData;
+      
+      if (!dataToExport || dataToExport.length === 0) {
+        alert('لا توجد بيانات للتصدير.');
+        return;
+      }
+
+      const formattedData = dataToExport.map(row => ({
+        "الرقم الإحصائي": getVal(row, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']),
+        "اسم الروضة": getVal(row, ['اسم المدرسة', 'اسم الروضة', 'الروضة']),
+        "القطاع": getVal(row, ['المحافظة', 'القطاع']),
+        "المدينة": getVal(row, ['المدينة القرية', 'المدينة']),
+        "السلطة": getVal(row, ['السلطة', 'نوع المدرسة']),
+        "طبيعة المبنى": getVal(row, ['طبيعة المبنى', 'الارتباط']),
+        "اسم المديرة": getVal(row, ['اسم المديرة', 'المديرة']),
+        "رقم الجوال": getVal(row, ['رقم الجوال', 'الجوال']),
+        "البريد الإلكتروني": getVal(row, ['البريد الإلكتروني', 'البريد']),
+        "المعلمات على الملاك": getVal(row, ['عدد المعلمات على الملاك', 'المعلمات']),
+        "العجز": getVal(row, ['العجز', 'النقص'])
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(formattedData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "بيانات الروضات");
+      XLSX.writeFile(workbook, "Kindergartens_Data.xlsx");
+    }
+  </script>
+</body>
+</html>

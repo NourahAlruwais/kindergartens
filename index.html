@@ -497,24 +497,32 @@
         const city = getVal(row, ['المدينة القرية', 'المدينة']).toLowerCase();
         const type = getVal(row, ['السلطة']).toLowerCase();
         const buildingType = getVal(row, ['طبيعة المبنى', 'الارتباط']).toLowerCase();
-        const manager = getVal(row, ['اسم المديرة', 'المديرة', 'القائدة']).toLowerCase();
+        const manager = getVal(row, ['اسم المديرة', 'المديرة']).toLowerCase();
         const phone = getVal(row, ['رقم الجوال', 'الجوال']).toLowerCase();
         const email = getVal(row, ['البريد الإلكتروني', 'البريد']).toLowerCase();
 
-        const matchesQuery = !query || statNo.includes(query) || name.includes(query) || manager.includes(query) || phone.includes(query) || email.includes(query) || city.includes(query);
-        const matchesProvince = !selectedProvince || province.includes(selectedProvince);
+        const matchesQuery = !query || 
+          statNo.includes(query) || 
+          name.includes(query) || 
+          manager.includes(query) || 
+          province.includes(query) || 
+          city.includes(query) || 
+          phone.includes(query) || 
+          email.includes(query) ||
+          buildingType.includes(query);
+
+        const matchesProvince = !selectedProvince || province === selectedProvince;
         
         let matchesType = true;
         if (selectedType) {
-          if (selectedType === 'حكومي') matchesType = type.includes('حكومي');
-          else if (selectedType === 'أهلي') matchesType = type.includes('أهلي');
-          else if (selectedType === 'عالمي') matchesType = type.includes('عالمي') || type.includes('أجنبي');
+          if (selectedType === 'عالمي') {
+            matchesType = type.includes('عالمي') || type.includes('أجنبي');
+          } else {
+            matchesType = type.includes(selectedType);
+          }
         }
 
-        let matchesBuilding = true;
-        if (selectedBuilding) {
-          matchesBuilding = buildingType.includes(selectedBuilding);
-        }
+        const matchesBuilding = !selectedBuilding || buildingType === selectedBuilding;
 
         return matchesQuery && matchesProvince && matchesType && matchesBuilding;
       });
@@ -527,13 +535,25 @@
       document.getElementById('provinceFilter').value = '';
       document.getElementById('typeFilter').value = '';
       document.getElementById('buildingFilter').value = '';
+      hasSearched = false;
       renderTable([], true);
+    }
+
+    function handleModalTypeChange() {
+      const typeVal = document.getElementById('modalType').value;
+      const buildingSelect = document.getElementById('modalBuildingType');
+      if (typeVal === 'حكومي') {
+        buildingSelect.value = 'ملحقة';
+      } else {
+        buildingSelect.value = '-';
+      }
     }
 
     function openAddModal() {
       document.getElementById('modalTitle').innerText = 'إضافة روضة جديدة';
-      document.getElementById('editOriginalId').value = '';
       document.getElementById('kgForm').reset();
+      document.getElementById('editOriginalId').value = '';
+      document.getElementById('modalType').value = 'حكومي';
       document.getElementById('modalBuildingType').value = 'ملحقة';
       document.getElementById('kgModal').classList.remove('hidden');
     }
@@ -542,72 +562,70 @@
       document.getElementById('kgModal').classList.add('hidden');
     }
 
-    function handleModalTypeChange() {
-      const typeVal = document.getElementById('modalType').value;
-      const buildingSelect = document.getElementById('modalBuildingType');
-      if (typeVal !== 'حكومي') {
-        buildingSelect.value = '-';
-      } else {
-        buildingSelect.value = 'ملحقة';
-      }
-    }
-
     function editKg(statNo) {
-      const row = window.activeData.find(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) === statNo);
-      if (!row) return;
+      const item = window.activeData.find(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) === statNo);
+      if (!item) {
+        alert('عذراً، لم يتم العثور على بيانات الروضة.');
+        return;
+      }
 
       document.getElementById('modalTitle').innerText = 'تعديل بيانات الروضة';
       document.getElementById('editOriginalId').value = statNo;
 
-      document.getElementById('modalStatNo').value = getVal(row, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']);
-      document.getElementById('modalName').value = getVal(row, ['اسم المدرسة', 'اسم الروضة', 'الروضة']);
-      document.getElementById('modalProvince').value = getVal(row, ['المحافظة', 'القطاع']);
-      document.getElementById('modalCity').value = getVal(row, ['المدينة القرية', 'المدينة', 'القرية']);
-      document.getElementById('modalType').value = getVal(row, ['السلطة', 'نوع المدرسة']);
-      document.getElementById('modalBuildingType').value = getVal(row, ['طبيعة المبنى', 'الارتباط']);
-      document.getElementById('modalManager').value = getVal(row, ['اسم المديرة', 'المديرة', 'القائدة']);
-      document.getElementById('modalPhone').value = getVal(row, ['رقم الجوال', 'الجوال', 'هاتف']);
-      document.getElementById('modalEmail').value = getVal(row, ['البريد الإلكتروني', 'البريد', 'إيميل']);
-      document.getElementById('modalStaffCount').value = getVal(row, ['عدد المعلمات على الملاك', 'المعلمات']);
-      document.getElementById('modalDeficit').value = getVal(row, ['العجز', 'النقص']);
+      document.getElementById('modalStatNo').value = getVal(item, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']);
+      document.getElementById('modalName').value = getVal(item, ['اسم المدرسة', 'اسم الروضة', 'الروضة']);
+      document.getElementById('modalProvince').value = getVal(item, ['المحافظة', 'القطاع']);
+      document.getElementById('modalCity').value = getVal(item, ['المدينة القرية', 'المدينة', 'القرية']);
+      
+      const typeVal = getVal(item, ['السلطة', 'نوع المدرسة']);
+      document.getElementById('modalType').value = typeVal.includes('أهلي') ? 'أهلي' : (typeVal.includes('عالمي') || typeVal.includes('أجنبي') ? 'عالمي وأجنبي' : 'حكومي');
+      
+      document.getElementById('modalBuildingType').value = getVal(item, ['طبيعة المبنى', 'الارتباط']);
+      document.getElementById('modalManager').value = getVal(item, ['اسم المديرة', 'المديرة', 'القائدة']);
+      document.getElementById('modalPhone').value = getVal(item, ['رقم الجوال', 'الجوال', 'هاتف']);
+      document.getElementById('modalEmail').value = getVal(item, ['البريد الإلكتروني', 'البريد', 'إيميل']);
+      document.getElementById('modalStaffCount').value = getVal(item, ['عدد المعلمات على الملاك', 'المعلمات']);
+      document.getElementById('modalDeficit').value = getVal(item, ['العجز', 'النقص']);
 
       document.getElementById('kgModal').classList.remove('hidden');
-    }
-
-    function deleteKg(statNo) {
-      if (confirm('هل أنت متأكد من حذف هذه الروضة؟')) {
-        window.activeData = window.activeData.filter(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) !== statNo);
-        saveToStorage();
-        if (hasSearched) {
-          performSearch();
-        } else {
-          renderTable([], true);
-        }
-      }
     }
 
     function saveKgData(event) {
       event.preventDefault();
       const originalId = document.getElementById('editOriginalId').value;
+      
+      const statNo = document.getElementById('modalStatNo').value.trim();
+      const name = document.getElementById('modalName').value.trim();
+      const province = document.getElementById('modalProvince').value.trim();
+      const city = document.getElementById('modalCity').value.trim();
+      const type = document.getElementById('modalType').value.trim();
+      const buildingType = document.getElementById('modalBuildingType').value.trim();
+      const manager = document.getElementById('modalManager').value.trim();
+      const phone = document.getElementById('modalPhone').value.trim();
+      const email = document.getElementById('modalEmail').value.trim();
+      const staffCount = document.getElementById('modalStaffCount').value.trim();
+      const deficit = document.getElementById('modalDeficit').value.trim();
 
       const newRecord = {
-        "الرقم الإحصائي": document.getElementById('modalStatNo').value.trim(),
-        "اسم المدرسة": document.getElementById('modalName').value.trim(),
-        "المحافظة": document.getElementById('modalProvince').value.trim(),
-        "المدينة القرية": document.getElementById('modalCity').value.trim(),
-        "السلطة": document.getElementById('modalType').value.trim(),
-        "طبيعة المبنى": document.getElementById('modalBuildingType').value.trim(),
-        "اسم المديرة": document.getElementById('modalManager').value.trim(),
-        "رقم الجوال": document.getElementById('modalPhone').value.trim(),
-        "البريد الإلكتروني": document.getElementById('modalEmail').value.trim(),
-        "عدد المعلمات على الملاك": document.getElementById('modalStaffCount').value.trim(),
-        "العجز": document.getElementById('modalDeficit').value.trim()
+        "المحافظة": province,
+        "المدينة القرية": city,
+        "السلطة": type,
+        "طبيعة المبنى": buildingType,
+        "الرقم الإحصائي": statNo,
+        "اسم المدرسة": name,
+        "اسم المديرة": manager,
+        "رقم الجوال": phone,
+        "البريد الإلكتروني": email,
+        "عدد المعلمات على الملاك": staffCount,
+        "العجز": deficit
       };
 
       if (originalId) {
         const index = window.activeData.findIndex(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) === originalId);
         if (index !== -1) {
           window.activeData[index] = newRecord;
+        } else {
+          window.activeData.push(newRecord);
         }
       } else {
         window.activeData.unshift(newRecord);
@@ -615,22 +633,42 @@
 
       saveToStorage();
       closeModal();
-      if (hasSearched) {
+      performSearch();
+    }
+
+    function deleteKg(statNo) {
+      if (confirm('هل أنت متأكد من حذف هذه الروضة نهائياً؟')) {
+        window.activeData = window.activeData.filter(r => getVal(r, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']) !== statNo);
+        saveToStorage();
         performSearch();
-      } else {
-        renderTable([], true);
       }
     }
 
     function exportFilteredToExcel() {
       const dataToExport = window.currentFilteredData && window.currentFilteredData.length > 0 ? window.currentFilteredData : window.activeData;
+      
       if (!dataToExport || dataToExport.length === 0) {
-        alert('لا توجد بيانات للتصدير!');
+        alert('لا توجد بيانات للتصدير.');
         return;
       }
-      const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+
+      const formattedData = dataToExport.map(row => ({
+        "الرقم الإحصائي": getVal(row, ['الرقم الإحصائي', 'الرقم الوزاري', 'إحصائي']),
+        "اسم الروضة": getVal(row, ['اسم المدرسة', 'اسم الروضة', 'الروضة']),
+        "القطاع": getVal(row, ['المحافظة', 'القطاع']),
+        "المدينة": getVal(row, ['المدينة القرية', 'المدينة']),
+        "السلطة": getVal(row, ['السلطة', 'نوع المدرسة']),
+        "طبيعة المبنى": getVal(row, ['طبيعة المبنى', 'الارتباط']),
+        "اسم المديرة": getVal(row, ['اسم المديرة', 'المديرة']),
+        "رقم الجوال": getVal(row, ['رقم الجوال', 'الجوال']),
+        "البريد الإلكتروني": getVal(row, ['البريد الإلكتروني', 'البريد']),
+        "المعلمات على الملاك": getVal(row, ['عدد المعلمات على الملاك', 'المعلمات']),
+        "العجز": getVal(row, ['العجز', 'النقص'])
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(formattedData);
       const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "الروضات");
+      XLSX.utils.book_append_sheet(workbook, worksheet, "بيانات الروضات");
       XLSX.writeFile(workbook, "Kindergartens_Data.xlsx");
     }
   </script>
